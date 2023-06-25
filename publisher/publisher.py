@@ -16,9 +16,14 @@ channel.queue_declare(queue=rabbitmq_queue)
 
 # Define the event payload
 event_payload = {
-    "name": "joao",
-    "message": "hello world"
-}
+    "id_cliente": 1, 
+    "id_funcionario": 1,
+    "id_item": 12, 
+    "data_aluguel": "2023-06-23",
+    "data_devolucao": "2023-06-30",
+    "id_evento":"Aluguel"
+   }
+
 
 # Publish events every 5 seconds
 while True:
