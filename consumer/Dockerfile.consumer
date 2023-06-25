@@ -1,0 +1,9 @@
+FROM python:3.9
+
+WORKDIR /app
+
+RUN pip install uvicorn==0.22.0 pika==1.3.2
+
+COPY consumer.py .
+
+CMD ["python", "consumer.py"]

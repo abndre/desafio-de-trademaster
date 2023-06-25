@@ -1,0 +1,19 @@
+# Use the official Python image as the base image
+FROM python:3.9-slim
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the requirements file to the working directory
+
+# Install the Python dependencies
+RUN pip install pika==1.3.2 flask==2.3.2 
+
+# Copy the application code to the working directory
+COPY . /app
+
+# Expose the port on which the Flask application will run
+EXPOSE 5000
+
+# Set the entrypoint command to run the Flask application
+CMD ["python", "api.py"]
