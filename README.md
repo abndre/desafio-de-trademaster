@@ -10,7 +10,7 @@ Busquei uma modelagem com starchema.
 
 # Serviços
 
-No contexto dos serviços para mensageria utilizei rabbitmq, banco postgresql e api usei um flask ou fastapi.
+No contexto dos serviços para mensageria utilizei rabbitmq, banco postgresql e api usei o flask .
 
 ## RabbitMQ
 
@@ -18,6 +18,14 @@ Basicamente temos o consumer que faz a leitura do evento e persiste na pasta /co
 posteriori por uma aplicação de dados.
 Validar o evento, de modo a entender se ele vai entrar para o banco de dado se torna um horizonte de responsabilidades,
 existe a responsabilidade de SE, de validar a informação e persistir no banco, e existe a responsabilidade de DE, de coletar o evento e persistir no lake. A troca de responsabilidades se vem ao caso de que DE não cria dados, apenas coleta, já SE, recebe os dados.
+
+## Flask
+
+Com o flaks foi criado um endpoint para servir de publisher para o rabbitmq.
+
+## Postgresql
+
+O banco postgresql foi feito de modo a iniciar com as tabelas e alguns dados para testar.
 
 ## Executando o Projeto
 
@@ -37,12 +45,14 @@ source venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
+Inicie o consumer
+
 ```sh
 # execute o consumer
 python3 consumer/consumer_db.py
 ```
 
-Este consumer faz a leitura dos eventos e persiste na pasta /data/events
+Este consumer faz a leitura dos eventos e persiste na pasta /data
 
 ## Testando consumer
 
@@ -57,13 +67,32 @@ Há algumas regras de limpeza, para verificar se o dado é bom ou ruim, que a po
 Coletando todos json da pasta /data, onde estão segmentados em fail e msg
 
 ```
-data
-├── fail
-│   └── msg
-│       ├── 0e8e8360-430b-4c1e-bb13-3893e41171a4.json
-└── msg
-    ├── 5a0ca630-652a-4a91-a335-8ee4dd2346ad.json
-    └── 85d8d689-6a2a-4c0d-b51d-f633035a7db7.json
+data/
+├── 02-processed
+│   ├── event
+│   │   └── msg
+│   │       ├── 2f92eb9b-9665-47bc-a6df-03d91ed3edea_2023-06-26_.json
+│   │       ├── 52ccabde-65ce-4cd0-a398-b2a5174339bb_2023-06-26_.json
+│   │       ├── 5d031b25-8dc1-4e66-a5ee-eefcf1ab1f71_2023-06-26_.json
+│   │       └── f1f774c2-95e9-4525-bb5c-ffbdcfdee98e_2023-06-26_.json
+│   └── fail
+│       └── msg
+│           ├── acea0b62-c501-4898-a667-8b5a4a21d4e4_2023-06-26_.json
+│           └── c974d7e3-4b32-44e9-b39b-d7722cad132e_2023-06-26_.json
+├── 03-enhanced
+│   └── year=2023
+│       └── month=03
+│           └── file.parquet
+└── 01-raw
+    └── event
+        └── msg
+            ├── 0541bf40-3dcc-471e-b698-0d8073fb4432_2023-06-26_.json
+            ├── 3fcd1080-4fc3-4cf9-bee6-152db9605327_2023-06-26_.json
+            ├── 7df29815-ef1f-4886-b1eb-077fa0a49fa2_2023-06-26_.json
+            ├── 8dc3b684-9fcf-42a1-9418-ba7e6be46b5e_2023-06-26_.json
+            ├── c710e2c5-92bf-4df4-841f-f17cb0737191_2023-06-26_.json
+            └── ce6644a5-1d2a-4209-bd25-2d05fc8d1ebc_2023-06-26_.json
+
 ```
 
 A priori coloquei apenas um uuid para o nome do arquivo, e algum enriquecimento no json, baseado se existe: usuario, funcionario ou item.
@@ -78,6 +107,9 @@ Criei a estrutura medalhao dos dados, com a seguinte proposta
 msg do evento sem tratamento
 02-processed
 msg do evento com tratamento se o usuario, funcionario e item existe.
+
+A partir da camada 03 os processos serão feitos utilizando pipelines, como databricks, utilizando notebooks
+
 03-enhanced
 aqui sera feito o tratamento para transformar os dados para csv mergeando todos os json
 e depois verificado a consistencia dos conteudos
@@ -86,3 +118,5 @@ aqui temos os dados prontos para serem utilizados pelas plataformas de BI, alem 
 estarem em formatos mais compactados como parquet.
 
 # Todo
+
+Não foi feito uma validação do cartão de credito no evento de envio
