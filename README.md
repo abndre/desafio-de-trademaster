@@ -71,4 +71,18 @@ Faltando a posteriori validacoes de:
 - cartao de credito
 
 Para o time de DE, os eventos persistidos no /data, são os dados raw, com enriquecimento basico dos eventos.
-Com um codigo pandas, seria possivel processar a trabalhar os dados, segue exemplo:
+
+Criei a estrutura medalhao dos dados, com a seguinte proposta
+
+01-raw
+msg do evento sem tratamento
+02-processed
+msg do evento com tratamento se o usuario, funcionario e item existe.
+03-enhanced
+aqui sera feito o tratamento para transformar os dados para csv mergeando todos os json
+e depois verificado a consistencia dos conteudos
+04-refined
+aqui temos os dados prontos para serem utilizados pelas plataformas de BI, alem dos dados
+estarem em formatos mais compactados como parquet.
+
+# Todo

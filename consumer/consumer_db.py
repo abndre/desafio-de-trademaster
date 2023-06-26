@@ -3,16 +3,14 @@ import json
 import os
 import uuid
 import psycopg2
-
+from datetime import datetime
 
 # Função para salvar a mensagem no arquivo
-def save_message(message, success=True):
-    path = './data/msg/' if success else './data/fail/msg/'
+def save_message(message, success=True, path='01-raw'):
+    path = f'./data/{path}/event/msg/' if success else f'./data/{path}/fail/msg/'
     os.makedirs(path, exist_ok=True)
-    filename = str(uuid.uuid4()) + '.json'
+    filename = f'{str(uuid.uuid4())}_{datetime.now().strftime("%Y-%m-%d")}_.json'
     filepath = os.path.join(path, filename)
-    # with open(filepath, 'w') as file:
-    #     file.write(message)
     with open(filepath, 'w') as file:
         json.dump(message, file)
     print("Mensagem salva em:", filepath)
@@ -36,7 +34,10 @@ def check_content_message(body):
 
         # Parse the message as JSON
         dados_aluguel_venda = json.loads(message)
-        
+
+        # Raw data
+        save_message(dados_aluguel_venda, success=True, path='raw')
+
 
         # Obter os IDs de cliente, funcionário e item
         id_evento = dados_aluguel_venda['id_evento']
@@ -69,14 +70,14 @@ def check_content_message(body):
             postgres_connection.commit()
 
             # Salvar a mensagem no arquivo de sucesso
-            save_message(dados_aluguel_venda, success=True)
+            save_message(dados_aluguel_venda, success=True, path='02-processed')
         else:
             # Salvar a mensagem no arquivo de falha
-            save_message(dados_aluguel_venda, success=False)
+            save_message(dados_aluguel_venda, success=False, path='02-processed')
 
     except Exception as e:
         # Se ocorrer algum erro, salvar a mensagem no arquivo de falha
-        save_message(dados_aluguel_venda, success=False)
+        save_message(dados_aluguel_venda, success=False, path='02-processed')
         print("Erro ao processar mensagem:", str(e))
 
     # finally:
