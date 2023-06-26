@@ -108,7 +108,8 @@ msg do evento sem tratamento
 02-processed
 msg do evento com tratamento se o usuario, funcionario e item existe.
 
-A partir da camada 03 os processos serão feitos utilizando pipelines, como databricks, utilizando notebooks
+A partir da camada 03 os processos serão feitos utilizando pipelines, como databricks, utilizando notebooks,
+no projeto deixamos o notebook [analise de dados](analise%20de%20dados.ipynb) para verificação do processo.
 
 03-enhanced
 aqui sera feito o tratamento para transformar os dados para csv mergeando todos os json
